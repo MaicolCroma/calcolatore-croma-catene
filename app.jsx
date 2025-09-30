@@ -1,10 +1,6 @@
 const { useState, useEffect } = React;
 const { Calculator, Search, RotateCcw, Database, Wifi, WifiOff, Download, Upload, Plus, Edit3, Trash2, Settings } = lucide;
 
-// Poi tutto il resto del codice...
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calculator, Search, RotateCcw, Database, Wifi, WifiOff, Download, Upload, Plus, Edit3, Trash2, Settings } from 'lucide-react';
-
 // Database Manager per IndexedDB
 class DatabaseManager {
   constructor() {
@@ -1522,8 +1518,5 @@ M/004,10.5,2.40,4.2,3.10`;
 };
 
 export default JewelryCalculator;
-
-
-
 
 ReactDOM.render(<JewelryCalculator />, document.getElementById('root'));
