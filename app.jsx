@@ -1,6 +1,17 @@
 const { useState, useEffect } = React;
-const { Calculator, Search, RotateCcw, Database, Wifi, WifiOff, Download, Upload, Plus, Edit3, Trash2, Settings } = lucide;
-
+// Componenti icone semplici senza Lucide
+const Calculator = () => <span>🧮</span>;
+const Search = () => <span>🔍</span>;
+const RotateCcw = () => <span>🔄</span>;
+const Database = () => <span>💾</span>;
+const Wifi = () => <span>📶</span>;
+const WifiOff = () => <span>📵</span>;
+const Download = () => <span>⬇️</span>;
+const Upload = () => <span>⬆️</span>;
+const Plus = () => <span>➕</span>;
+const Edit3 = () => <span>✏️</span>;
+const Trash2 = () => <span>🗑️</span>;
+const Settings = () => <span>⚙️</span>;
 
 // Database Manager per IndexedDB
 class DatabaseManager {
