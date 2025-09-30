@@ -1518,9 +1518,4 @@ M/004,10.5,2.40,4.2,3.10`;
   );
 };
 
-export default JewelryCalculator;
-
-
-
-
 ReactDOM.render(<JewelryCalculator />, document.getElementById('root'));
