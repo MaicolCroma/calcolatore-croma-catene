@@ -2,7 +2,7 @@
   "name": "Calcolatore Croma Catene",
   "short_name": "Croma Catene",
   "description": "Calcolatore per costi e pesi gioielleria",
-  "start_url": "/",
+  "start_url": "/calcolatore-croma-catene/",
   "display": "standalone",
   "background_color": "#1f2937",
   "theme_color": "#374151",
