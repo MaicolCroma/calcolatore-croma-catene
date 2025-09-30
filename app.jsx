@@ -172,7 +172,7 @@ const JewelryCalculator = () => {
     { value: 'Dorato 1MC', label: 'Dorato 1MC', cost: 1.05 },
     { value: 'Ossidato', label: 'Ossidato', cost: 0.036 },
     { value: 'Platino', label: 'Platino', cost: 0.33 },
-    { value: 'Rodio', label: 'Rodio', cost: 0.29 },
+    { value: 'Rodio', label: 'Rodio', cost: 0.32 },
     { value: 'Rutenio', label: 'Rutenio', cost: 0.31 }
   ]);
   const [editingGalvanica, setEditingGalvanica] = useState(null);
@@ -195,7 +195,7 @@ const JewelryCalculator = () => {
   const [manifatturaFinito, setManifatturaFinito] = useState('');
   const [lunghezzaBracciale, setLunghezzaBracciale] = useState('');
   const [lunghezzaInch, setLunghezzaInch] = useState('');
-  const [quotazioneMetallo, setQuotazioneMetallo] = useState('1.00');
+  const [quotazioneMetallo, setQuotazioneMetallo] = useState('1.30');
   const [coloreGalvanica, setColoreGalvanica] = useState('');
   const [finitura, setFinitura] = useState('');
   const [quantitaMetraggio, setQuantitaMetraggio] = useState('');
@@ -457,7 +457,7 @@ const JewelryCalculator = () => {
     setQuantitaMetraggio('');
     setNumeroPezzi('');
     setGrammiPezzi('');
-    setQuotazioneMetallo('1.00');
+    setQuotazioneMetallo('1.30');
     // Reset valori calcolati
     setPesoCm(0);
     setTotalePesoBracciale(0);
