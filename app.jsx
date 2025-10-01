@@ -208,7 +208,7 @@ const DATABASE_PASSWORD = "croma2025";
     { value: 'Argentatura', label: 'Argentatura', cost: 0.008 },
     { value: 'Brunito', label: 'Brunito', cost: 0.016 },
     { value: 'Dorato Flash', label: 'Dorato Flash', cost: 0.38 },
-    { value: 'Dorato 1/2MC', label: 'Dorato 1/2MC', cost: 0.64 },
+    { value: 'Dorato 1/2MC', label: 'Dorato 1/2MC', cost: 0.65 },
     { value: 'Dorato 1MC', label: 'Dorato 1MC', cost: 1.05 },
     { value: 'Ossidato', label: 'Ossidato', cost: 0.036 },
     { value: 'Platino', label: 'Platino', cost: 0.33 },
@@ -219,8 +219,8 @@ const DATABASE_PASSWORD = "croma2025";
 
   const [finitureState, setFinitureState] = useState([
     { value: '', label: 'Nessuna', cost: 0 },
-    { value: 'Antitarnish', label: 'Antitarnish', cost: 0.008 },
-    { value: 'Antitarnish Agere', label: 'Antitarnish Agere', cost: 0.055 },
+    { value: 'Antiturnish', label: 'Antiturnish', cost: 0.008 },
+    { value: 'Antiturnish Agere', label: 'Antiturnish Agere', cost: 0.055 },
     { value: 'E-Coating', label: 'E-Coating', cost: 0.030 },
     { value: 'Rocchetti', label: 'Rocchetti', cost: 0.006 }
   ]);
@@ -564,7 +564,7 @@ const DATABASE_PASSWORD = "croma2025";
         { value: 'Argentatura', label: 'Argentatura', cost: 0.008 },
         { value: 'Brunito', label: 'Brunito', cost: 0.016 },
         { value: 'Dorato Flash', label: 'Dorato Flash', cost: 0.38 },
-        { value: 'Dorato 1/2MC', label: 'Dorato 1/2MC', cost: 0.64 },
+        { value: 'Dorato 1/2MC', label: 'Dorato 1/2MC', cost: 0.65 },
         { value: 'Dorato 1MC', label: 'Dorato 1MC', cost: 1.05 },
         { value: 'Ossidato', label: 'Ossidato', cost: 0.036 },
         { value: 'Platino', label: 'Platino', cost: 0.33 },
@@ -599,8 +599,8 @@ const DATABASE_PASSWORD = "croma2025";
     if (confirm('Ripristinare i costi di default per tutte le finiture?')) {
       const defaultFiniture = [
         { value: '', label: 'Nessuna', cost: 0 },
-        { value: 'Antitarnish', label: 'Antitarnish', cost: 0.008 },
-        { value: 'Antitarnish Agere', label: 'Antitarnish Agere', cost: 0.055 },
+        { value: 'Antiturnish', label: 'Antiturnish', cost: 0.008 },
+        { value: 'Antiturnish Agere', label: 'Antiturnish Agere', cost: 0.055 },
         { value: 'E-Coating', label: 'E-Coating', cost: 0.030 },
         { value: 'Rocchetti', label: 'Rocchetti', cost: 0.006 }
       ];
