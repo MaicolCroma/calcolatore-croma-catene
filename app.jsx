@@ -191,6 +191,7 @@ const JewelryCalculator = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [currentTab, setCurrentTab] = useState('calculator');
   const [isLavorazioniUnlocked, setIsLavorazioniUnlocked] = useState(false);
+  const [isDatabaseUnlocked, setIsDatabaseUnlocked] = useState(false);
   
   // Stati per il database
   const [products, setProducts] = useState([]);
@@ -198,6 +199,8 @@ const JewelryCalculator = () => {
   const [showProductForm, setShowProductForm] = useState(false);
   // Password per accesso lavorazioni (MODIFICABILE QUI)
   const LAVORAZIONI_PASSWORD = "croma2025";
+  // Password per accesso database (MODIFICABILE QUI)
+const DATABASE_PASSWORD = "croma2025";
 
   // Stati per lavorazioni
   const [galvaniche, setGalvaniche] = useState([
@@ -272,7 +275,7 @@ const JewelryCalculator = () => {
     initDb();
   }, []);
 
-  // Carica configurazioni salvate da IndexedDB
+ // Carica configurazioni salvate da IndexedDB
   const loadSavedConfigs = async (dbManager) => {
     try {
       // Carica galvaniche salvate
@@ -287,6 +290,13 @@ const JewelryCalculator = () => {
       if (savedFiniture) {
         setFinitureState(savedFiniture);
         console.log('Finiture caricate da DB');
+      }
+      
+      // Carica quotazione metallo salvata
+      const savedQuotazione = await dbManager.loadConfig('quotazioneMetallo');
+      if (savedQuotazione) {
+        setQuotazioneMetallo(savedQuotazione);
+        console.log('Quotazione metallo caricata da DB:', savedQuotazione);
       }
     } catch (error) {
       console.error('Errore nel caricare configurazioni:', error);
@@ -902,7 +912,7 @@ M/004,10.5,2.40,4.2,3.10`;
   };
 
   // Tab Navigation
-  const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
+const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
     <button
       onClick={() => {
         // Se si clicca su Lavorazioni e non è sbloccato, chiedi password
@@ -914,7 +924,18 @@ M/004,10.5,2.40,4.2,3.10`;
           } else if (password !== null) {
             alert('❌ Password errata!');
           }
-        } else {
+        } 
+        // Se si clicca su Database e non è sbloccato, chiedi password
+        else if (id === 'database' && !isDatabaseUnlocked) {
+          const password = prompt('Inserisci la password per accedere al Database:');
+          if (password === DATABASE_PASSWORD) {
+            setIsDatabaseUnlocked(true);
+            onClick(id);
+          } else if (password !== null) {
+            alert('❌ Password errata!');
+          }
+        } 
+        else {
           onClick(id);
         }
       }}
@@ -1260,6 +1281,31 @@ M/004,10.5,2.40,4.2,3.10`;
                 </div>
               </div>
 
+              {/* Quotazione Metallo */}
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                <h2 className="text-xl font-semibold text-white mb-4">Quotazione Metallo</h2>
+                
+                <div>
+                  <label className="block text-white/80 text-sm font-medium mb-2">Prezzo al grammo (€)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={quotazioneMetallo}
+                    onChange={async (e) => {
+                      const newValue = e.target.value;
+                      setQuotazioneMetallo(newValue);
+                      
+                      // Salva in IndexedDB
+                      if (db && newValue) {
+                        await db.saveConfig('quotazioneMetallo', newValue);
+                        console.log('Quotazione metallo salvata in DB:', newValue);
+                      }
+                    }}
+                    className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+              </div>
+
               {/* Risultati Costi */}
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h2 className="text-xl font-semibold text-white mb-4">Costi Unitari</h2>
@@ -1419,25 +1465,7 @@ M/004,10.5,2.40,4.2,3.10`;
         {/* Lavorazioni Tab */}
         {currentTab === 'lavorazioni' && (
           <div className="space-y-6">
-            {/* Quotazione Metallo */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-              <h2 className="text-2xl font-semibold text-white mb-4 flex items-center gap-2">
-                <Settings className="w-6 h-6" />
-                Quotazione Metallo
-              </h2>
-              
-              <div>
-                <label className="block text-white/80 text-sm font-medium mb-2">Prezzo al grammo (€)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={quotazioneMetallo}
-                  onChange={(e) => setQuotazioneMetallo(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-            </div>
-
+            
             {/* Gestione Galvaniche */}
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
               <div className="flex items-center justify-between mb-4">
