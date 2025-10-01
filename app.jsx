@@ -529,7 +529,7 @@ const DATABASE_PASSWORD = "croma2025";
     setQuantitaMetraggio('');
     setNumeroPezzi('');
     setGrammiPezzi('');
-    setQuotazioneMetallo('1.30');
+    //setQuotazioneMetallo('1.30');
     // Reset valori calcolati
     setPesoCm(0);
     setTotalePesoBracciale(0);
