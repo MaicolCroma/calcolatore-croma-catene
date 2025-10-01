@@ -568,7 +568,7 @@ const DATABASE_PASSWORD = "croma2025";
         { value: 'Dorato 1MC', label: 'Dorato 1MC', cost: 1.05 },
         { value: 'Ossidato', label: 'Ossidato', cost: 0.036 },
         { value: 'Platino', label: 'Platino', cost: 0.33 },
-        { value: 'Rodio', label: 'Rodio', cost: 0.29 },
+        { value: 'Rodio', label: 'Rodio', cost: 0.32 },
         { value: 'Rutenio', label: 'Rutenio', cost: 0.31 }
       ];
       setGalvaniche(defaultGalvaniche);
