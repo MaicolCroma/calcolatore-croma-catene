@@ -17,7 +17,7 @@ const Settings = () => <span>⚙️</span>;
 class DatabaseManager {
   constructor() {
     this.dbName = 'JewelryCalculatorDB';
-    this.version = 1;
+    this.version = 2; // Incrementata versione per nuove store
     this.db = null;
   }
 
@@ -44,6 +44,10 @@ class DatabaseManager {
         if (!db.objectStoreNames.contains('baseB4')) {
           const storeB4 = db.createObjectStore('baseB4', { keyPath: 'codice' });
           storeB4.createIndex('codice', 'codice', { unique: true });
+        }
+// Store per configurazioni (galvaniche, finiture, ecc)
+        if (!db.objectStoreNames.contains('config')) {
+          db.createObjectStore('config', { keyPath: 'key' });
         }
       };
     });
@@ -150,17 +154,50 @@ class DatabaseManager {
       return { baseB3: [], baseB4: [] };
     }
   }
+// Salva configurazione (galvaniche, finiture)
+  async saveConfig(key, value) {
+    try {
+      const transaction = this.db.transaction(['config'], 'readwrite');
+      const store = transaction.objectStore('config');
+      await store.put({ key, value });
+      return true;
+    } catch (error) {
+      console.error('Errore nel salvare config:', error);
+      return false;
+    }
+  }
+
+  // Carica configurazione
+  async loadConfig(key) {
+    try {
+      const transaction = this.db.transaction(['config'], 'readonly');
+      const store = transaction.objectStore('config');
+      
+      return new Promise((resolve, reject) => {
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result?.value || null);
+        request.onerror = () => reject(request.error);
+      });
+    } catch (error) {
+      console.error('Errore nel caricare config:', error);
+      return null;
+    }
+  }
+
 }
 
 const JewelryCalculator = () => {
   const [db, setDb] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [currentTab, setCurrentTab] = useState('calculator');
+  const [isLavorazioniUnlocked, setIsLavorazioniUnlocked] = useState(false);
   
   // Stati per il database
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showProductForm, setShowProductForm] = useState(false);
+  // Password per accesso lavorazioni (MODIFICABILE QUI)
+  const LAVORAZIONI_PASSWORD = "croma2025";
 
   // Stati per lavorazioni
   const [galvaniche, setGalvaniche] = useState([
@@ -220,16 +257,41 @@ const JewelryCalculator = () => {
   const finiture = finitureState;
 
   // Inizializzazione database
+ // Inizializzazione database
   useEffect(() => {
     const initDb = async () => {
       const dbManager = new DatabaseManager();
       await dbManager.init();
       setDb(dbManager);
       loadProducts(dbManager);
+      
+      // Carica configurazioni salvate
+      await loadSavedConfigs(dbManager);
     };
     
     initDb();
   }, []);
+
+  // Carica configurazioni salvate da IndexedDB
+  const loadSavedConfigs = async (dbManager) => {
+    try {
+      // Carica galvaniche salvate
+      const savedGalvaniche = await dbManager.loadConfig('galvaniche');
+      if (savedGalvaniche) {
+        setGalvaniche(savedGalvaniche);
+        console.log('Galvaniche caricate da DB');
+      }
+      
+      // Carica finiture salvate
+      const savedFiniture = await dbManager.loadConfig('finiture');
+      if (savedFiniture) {
+        setFinitureState(savedFiniture);
+        console.log('Finiture caricate da DB');
+      }
+    } catch (error) {
+      console.error('Errore nel caricare configurazioni:', error);
+    }
+  };
 
   // Carica prodotti dal database
   const loadProducts = async (dbManager) => {
@@ -472,16 +534,22 @@ const JewelryCalculator = () => {
   };
 
   // Gestione galvaniche
-  const handleUpdateGalvanica = (index, newCost) => {
+  const handleUpdateGalvanica = async (index, newCost) => {
     const updatedGalvaniche = [...galvaniche];
     updatedGalvaniche[index].cost = parseFloat(newCost) || 0;
     setGalvaniche(updatedGalvaniche);
     setEditingGalvanica(null);
+    
+    // Salva in IndexedDB
+    if (db) {
+      await db.saveConfig('galvaniche', updatedGalvaniche);
+      console.log('Galvaniche salvate in DB');
+    }
   };
 
-  const handleResetGalvaniche = () => {
+ const handleResetGalvaniche = async () => {
     if (confirm('Ripristinare i costi di default per tutte le galvaniche?')) {
-      setGalvaniche([
+      const defaultGalvaniche = [
         { value: '', label: 'Nessuna', cost: 0 },
         { value: 'Argentatura', label: 'Argentatura', cost: 0.008 },
         { value: 'Brunito', label: 'Brunito', cost: 0.016 },
@@ -492,27 +560,47 @@ const JewelryCalculator = () => {
         { value: 'Platino', label: 'Platino', cost: 0.33 },
         { value: 'Rodio', label: 'Rodio', cost: 0.29 },
         { value: 'Rutenio', label: 'Rutenio', cost: 0.31 }
-      ]);
+      ];
+      setGalvaniche(defaultGalvaniche);
+      
+      // Salva in IndexedDB
+      if (db) {
+        await db.saveConfig('galvaniche', defaultGalvaniche);
+        console.log('Galvaniche ripristinate e salvate in DB');
+      }
     }
   };
 
+
   // Gestione finiture
-  const handleUpdateFinitura = (index, newCost) => {
+  const handleUpdateFinitura = async (index, newCost) => {
     const updatedFiniture = [...finitureState];
     updatedFiniture[index].cost = parseFloat(newCost) || 0;
     setFinitureState(updatedFiniture);
     setEditingFinitura(null);
+    
+    // Salva in IndexedDB
+    if (db) {
+      await db.saveConfig('finiture', updatedFiniture);
+      console.log('Finiture salvate in DB');
+    }
   };
-
-  const handleResetFiniture = () => {
+ const handleResetFiniture = async () => {
     if (confirm('Ripristinare i costi di default per tutte le finiture?')) {
-      setFinitureState([
+      const defaultFiniture = [
         { value: '', label: 'Nessuna', cost: 0 },
         { value: 'Antitarnish', label: 'Antitarnish', cost: 0.008 },
         { value: 'Antitarnish Agere', label: 'Antitarnish Agere', cost: 0.055 },
         { value: 'E-Coating', label: 'E-Coating', cost: 0.030 },
         { value: 'Rocchetti', label: 'Rocchetti', cost: 0.006 }
-      ]);
+      ];
+      setFinitureState(defaultFiniture);
+      
+      // Salva in IndexedDB
+      if (db) {
+        await db.saveConfig('finiture', defaultFiniture);
+        console.log('Finiture ripristinate e salvate in DB');
+      }
     }
   };
 
@@ -816,7 +904,20 @@ M/004,10.5,2.40,4.2,3.10`;
   // Tab Navigation
   const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
     <button
-      onClick={() => onClick(id)}
+      onClick={() => {
+        // Se si clicca su Lavorazioni e non è sbloccato, chiedi password
+        if (id === 'lavorazioni' && !isLavorazioniUnlocked) {
+          const password = prompt('Inserisci la password per accedere alle Lavorazioni:');
+          if (password === LAVORAZIONI_PASSWORD) {
+            setIsLavorazioniUnlocked(true);
+            onClick(id);
+          } else if (password !== null) {
+            alert('❌ Password errata!');
+          }
+        } else {
+          onClick(id);
+        }
+      }}
       className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all ${
         isActive
           ? 'bg-white/20 text-white border-2 border-white/30'
