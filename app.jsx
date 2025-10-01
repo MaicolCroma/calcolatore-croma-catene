@@ -915,18 +915,8 @@ M/004,10.5,2.40,4.2,3.10`;
 const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
     <button
       onClick={() => {
-        // Se si clicca su Lavorazioni e non è sbloccato, chiedi password
-        if (id === 'lavorazioni' && !isLavorazioniUnlocked) {
-          const password = prompt('Inserisci la password per accedere alle Lavorazioni:');
-          if (password === LAVORAZIONI_PASSWORD) {
-            setIsLavorazioniUnlocked(true);
-            onClick(id);
-          } else if (password !== null) {
-            alert('❌ Password errata!');
-          }
-        } 
         // Se si clicca su Database e non è sbloccato, chiedi password
-        else if (id === 'database' && !isDatabaseUnlocked) {
+        if (id === 'database' && !isDatabaseUnlocked) {
           const password = prompt('Inserisci la password per accedere al Database:');
           if (password === DATABASE_PASSWORD) {
             setIsDatabaseUnlocked(true);
@@ -934,8 +924,7 @@ const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
           } else if (password !== null) {
             alert('❌ Password errata!');
           }
-        } 
-        else {
+        } else {
           onClick(id);
         }
       }}
