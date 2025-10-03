@@ -568,7 +568,7 @@ const DATABASE_PASSWORD = "croma2025";
         { value: 'Dorato 1MC', label: 'Dorato 1MC', cost: 1.05 },
         { value: 'Ossidato', label: 'Ossidato', cost: 0.036 },
         { value: 'Platino', label: 'Platino', cost: 0.33 },
-        { value: 'Rodio', label: 'Rodio', cost: 0.32 },
+        { value: 'Rodio', label: 'Rodio', cost: 0.29 },
         { value: 'Rutenio', label: 'Rutenio', cost: 0.31 }
       ];
       setGalvaniche(defaultGalvaniche);
@@ -636,46 +636,6 @@ const DATABASE_PASSWORD = "croma2025";
       await loadProducts(db);
     } catch (error) {
       console.error('Errore nell\'eliminare il prodotto:', error);
-    }
-  };
-
-  // Export/Import dati Excel
-  const handleExportExcel = async () => {
-    if (!db) return;
-    
-    try {
-      const data = await db.exportData();
-      
-      // Prepara i dati per l'export
-      let csvContent = '';
-      
-      // Foglio BaseB3
-      csvContent += '=== BASE B3 ===\n';
-      csvContent += 'Codice,Grammi/Metro,Manifattura Metraggio,Grammi 40cm,Manifattura Finito\n';
-      data.baseB3.forEach(item => {
-        csvContent += `${item.codice},${item.grammiMetro},${item.manifatturaMetraggio},${item.grammi40cm},${item.manifatturaFinito}\n`;
-      });
-      
-      csvContent += '\n=== BASE B4 ===\n';
-      csvContent += 'Codice,Grammi/Metro,Manifattura Metraggio,Grammi 40cm,Manifattura Finito\n';
-      data.baseB4.forEach(item => {
-        csvContent += `${item.codice},${item.grammiMetro},${item.manifatturaMetraggio},${item.grammi40cm},${item.manifatturaFinito}\n`;
-      });
-      
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'database_gioielleria.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      alert('Database esportato con successo in formato CSV!');
-    } catch (error) {
-      console.error('Errore nell\'export:', error);
-      alert('Errore nell\'esportazione del database');
     }
   };
 
@@ -1329,14 +1289,6 @@ const TabButton = ({ id, label, icon: Icon, isActive, onClick }) => (
                   >
                     <Download className="w-4 h-4" />
                     <span className="hidden sm:inline">Template</span>
-                  </button>
-                  
-                  <button
-                    onClick={handleExportExcel}
-                    className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors text-sm"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span className="hidden sm:inline">Esporta</span>
                   </button>
                   
                   <label className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors cursor-pointer text-sm">
